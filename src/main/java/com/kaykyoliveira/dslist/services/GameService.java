@@ -29,12 +29,12 @@ public class GameService {
     @Transactional(readOnly = true)
     public Page<GameMinDTO> findAll(Pageable pageable){
         Page<Game> result = repository.findAll(pageable);
-        return result.map(x -> new GameMinDTO(x));
+        return result.map(GameMinDTO::new);
     }
 
     public List<GameMinDTO> findByList(Long id){
         List<GameMinProjection> list = repository.searchByList(id);
-        return list.stream().map(x -> new GameMinDTO(x)).collect(Collectors.toList());
+        return list.stream().map(GameMinDTO::new).collect(Collectors.toList());
     }
 
 }

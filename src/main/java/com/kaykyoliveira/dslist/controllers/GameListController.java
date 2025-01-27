@@ -2,16 +2,14 @@ package com.kaykyoliveira.dslist.controllers;
 
 import com.kaykyoliveira.dslist.dto.GameListDTO;
 import com.kaykyoliveira.dslist.dto.GameMinDTO;
+import com.kaykyoliveira.dslist.dto.ReplacementDTO;
 import com.kaykyoliveira.dslist.services.GameListService;
 import com.kaykyoliveira.dslist.services.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,14 +18,14 @@ import java.util.List;
 public class GameListController {
 
     @Autowired
-    private GameListService service;
+    private GameListService gameListService;
 
     @Autowired
     private GameService gameService;
 
     @GetMapping
     public ResponseEntity<Page<GameListDTO>> findAll(Pageable pageable){
-        Page<GameListDTO> dto = service.findAll(pageable);
+        Page<GameListDTO> dto = gameListService.findAll(pageable);
         return ResponseEntity.ok(dto);
     }
 
@@ -35,5 +33,11 @@ public class GameListController {
     public ResponseEntity<List<GameMinDTO>> findByList(@PathVariable Long listId){
         List<GameMinDTO> dto = gameService.findByList(listId);
         return ResponseEntity.ok(dto);
+    }
+
+    @PostMapping(value = "/{listId}/replacement")
+    public ResponseEntity<Void> move(@PathVariable Long listId, @RequestBody ReplacementDTO body){
+        gameListService.move(listId, body.getIndexSource(), body.getIndexDestination());
+        return ResponseEntity.noContent().build();
     }
 }
